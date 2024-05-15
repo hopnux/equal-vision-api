@@ -1,4 +1,4 @@
-### Record Label API
+### Record Label API ⚫
 ---
 
 API implemented for academic purposes as part of a MERN stack e-commerce project for an indie record label. 
