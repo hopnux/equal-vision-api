@@ -73,6 +73,9 @@ class User extends Model {
         sequelize,
         modelName: "user",
         timestamps: true,
+        defaultScope: {
+          attributes: { exclude: ["password"] },
+        },
         paranoid: true,
         hooks: {
           afterDestroy: async (instance) => {
