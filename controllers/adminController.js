@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 // GET ALL ADMINS
 async function index(req, res) {
   try {
-    const admins = await Admin.findAll({ order: [["createdAt", "DESC"]] });
+    const admins = await Admin.scope("noPassword").findAll({ order: [["createdAt", "DESC"]] });
     return res.json(admins);
   } catch (err) {
     console.log(err);
@@ -14,10 +14,10 @@ async function index(req, res) {
 // GET ONE ADMIN
 async function show(req, res) {
   try {
-    const admin = await Admin.findByPk(req.params.id);
+    const admin = await Admin.scope("noPassword").findByPk(req.params.id);
     return admin
       ? res.json(admin)
-      : res.json({ msg: "Error 404. Admin not found.", notFound: true });
+      : res.status(404).json({ msg: "We apologize. Admin not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -50,7 +50,10 @@ async function update(req, res) {
   try {
     const admin = await Admin.findByPk(req.params.id);
     if (!admin) {
-      return res.json({ msg: "We apologize. Admin not found." });
+      return res.status(404).json({ msg: "We apologize. Admin not found." });
+    }
+    if (admin.id === 1) {
+      return res.json({ msg: "We apologize. That admin cannot be updated." });
     }
     await Admin.update(
       {
@@ -72,7 +75,7 @@ async function destroy(req, res) {
   try {
     const admin = await Admin.findByPk(req.params.id);
     if (!admin) {
-      return res.json({ msg: "Error 404. Admin not found." });
+      return res.status(404).json({ msg: "We apologize. Admin not found." });
     }
     if (admin.id === 1) {
       return res.json({ msg: "We apologize. That admin cannot be deleted." });

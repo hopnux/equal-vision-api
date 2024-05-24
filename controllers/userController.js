@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 // GET ALL USERS
 async function index(req, res) {
   try {
-    const users = await User.findAll({ order: [["createdAt", "DESC"]] });
+    const users = await User.scope("noPassword").findAll({ order: [["createdAt", "DESC"]] });
     return res.json(users);
   } catch (err) {
     console.log(err);
@@ -15,8 +15,10 @@ async function index(req, res) {
 // GET ONE USER
 async function show(req, res) {
   try {
-    const user = await User.findByPk(req.params.id);
-    return user ? res.json(user) : res.json({ msg: "Error 404. User not found.", notFound: true });
+    const user = await User.scope("noPassword").findByPk(req.params.id);
+    return user
+      ? res.json(user)
+      : res.status(404).json({ msg: "We apologize. User not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -51,7 +53,7 @@ async function update(req, res) {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) {
-      return res.json({ msg: "We apologize. User not found." });
+      return res.status(404).json({ msg: "We apologize. User not found." });
     }
     await User.update(
       {
@@ -75,7 +77,7 @@ async function destroy(req, res) {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) {
-      return res.json({ msg: "We apologize. User not found." });
+      return res.status(404).json({ msg: "We apologize. User not found." });
     }
     const order = await Order.findAll({ where: { userId: req.params.id } });
     await User.destroy({

@@ -73,8 +73,10 @@ class User extends Model {
         sequelize,
         modelName: "user",
         timestamps: true,
-        defaultScope: {
-          attributes: { exclude: ["password"] },
+        scopes: {
+          noPassword: {
+            attributes: { exclude: ["password"] },
+          },
         },
         paranoid: true,
         hooks: {

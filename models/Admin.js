@@ -61,8 +61,10 @@ class Admin extends Model {
         sequelize,
         modelName: "admin",
         timestamps: true,
-        defaultScope: {
-          attributes: { exclude: ["password"] },
+        scopes: {
+          noPassword: {
+            attributes: { exclude: ["password"] },
+          },
         },
       },
     );
