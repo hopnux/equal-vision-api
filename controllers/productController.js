@@ -26,7 +26,7 @@ async function index(req, res) {
     const products = await Product.findAll({
       include: [{ model: Artist }, { model: Category }],
     });
-    return res.json(products);
+    return res.status(200).json(products);
   } catch (err) {
     console.log(err);
   }
@@ -37,8 +37,8 @@ async function show(req, res) {
   try {
     const product = await Product.findByPk(req.params.id, { include: [{ model: Artist }] });
     return product
-      ? res.json(product)
-      : res.json({ msg: "Error 404. Product not found.", notFound: true });
+      ? res.status(200).json(product)
+      : res.status(404).json({ msg: "We apologize. Product not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -79,7 +79,7 @@ async function store(req, res) {
         /// ↑ *** SUPABASE SETTINGS | UNCOMMENT ONLY FOR DEPLOYMENT ↑ *** ///
       }
 
-      return res.json({ msg: "Product added successfully." });
+      return res.status(201).json({ msg: "Product added successfully." });
     } catch (err) {
       console.log(err);
       return res.json({ msg: err.errors[0].message, constraint: true });
@@ -92,7 +92,7 @@ async function update(req, res) {
   const product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return res.json({ msg: "We apologize. Product not found." });
+    return res.status(404).json({ msg: "We apologize. Product not found." });
   }
 
   form.parse(req, async (err, fields, files) => {
@@ -132,7 +132,7 @@ async function update(req, res) {
         /// ↑ *** SUPABASE SETTINGS | UNCOMMENT ONLY FOR DEPLOYMENT ↑ *** ///
       }
 
-      return res.json({ msg: "Product updated successfully" });
+      return res.status(200).json({ msg: "Product updated successfully" });
     } catch (err) {
       console.log(err);
       return res.json({ msg: err.errors[0].message, constraint: true });
@@ -148,7 +148,7 @@ async function destroy(req, res) {
         id: req.params.id,
       },
     });
-    return res.json({ msg: "Product deleted successfully." });
+    return res.status(200).json({ msg: "Product deleted successfully." });
   } catch (err) {
     console.log(err);
   }

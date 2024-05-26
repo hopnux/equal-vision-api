@@ -5,7 +5,7 @@ const { User } = require("../models");
 async function index(req, res) {
   try {
     const orders = await Order.findAll({ order: [["createdAt", "DESC"]] });
-    return res.json(orders);
+    return res.status(200).json(orders);
   } catch (err) {
     console.log(err);
   }
@@ -16,8 +16,8 @@ async function show(req, res) {
   try {
     const order = await Order.findByPk(req.params.id);
     return order
-      ? res.json(order)
-      : res.json({ msg: "Error 404. Order not found.", notFound: true });
+      ? res.status(200).json(order)
+      : res.status(404).json({ msg: "We apologize. Order not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -35,7 +35,7 @@ async function store(req, res) {
       paymentMethod: req.body.paymentMethod,
       products: req.body.products,
     });
-    return res.json({ msg: "Order added successfully." });
+    return res.status(201).json({ msg: "Order added successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -47,7 +47,7 @@ async function update(req, res) {
   try {
     const order = await Order.findByPk(req.params.id);
     if (!order) {
-      return res.json({ msg: "We apologize. Order not found." });
+      return res.status(404).json({ msg: "We apologize. Order not found." });
     }
     await Order.update(
       {
@@ -55,7 +55,7 @@ async function update(req, res) {
       },
       { where: { id: req.params.id } },
     );
-    return res.json({ msg: "Order updated successfully." });
+    return res.status(200).json({ msg: "Order updated successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -67,14 +67,14 @@ async function destroy(req, res) {
   try {
     const order = await Order.findByPk(req.params.id);
     if (!order) {
-      return res.json({ msg: "We apologize. Order not found." });
+      return res.status(404).json({ msg: "We apologize. Order not found." });
     }
     await Order.destroy({
       where: {
         id: req.params.id,
       },
     });
-    return res.json({ msg: "Order deleted successfully." });
+    return res.status(200).json({ msg: "Order deleted successfully." });
   } catch (err) {
     console.log(err);
   }

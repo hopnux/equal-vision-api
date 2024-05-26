@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 async function index(req, res) {
   try {
     const users = await User.scope("noPassword").findAll({ order: [["createdAt", "DESC"]] });
-    return res.json(users);
+    return res.status(200).json(users);
   } catch (err) {
     console.log(err);
   }
@@ -17,7 +17,7 @@ async function show(req, res) {
   try {
     const user = await User.scope("noPassword").findByPk(req.params.id);
     return user
-      ? res.json(user)
+      ? res.status(200).json(user)
       : res.status(404).json({ msg: "We apologize. User not found.", notFound: true });
   } catch (err) {
     console.log(err);
@@ -41,7 +41,7 @@ async function store(req, res) {
       phone: req.body.phone,
       address: req.body.address,
     });
-    return res.json({ msg: "User created successfully." });
+    return res.status(201).json({ msg: "User created successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -65,7 +65,7 @@ async function update(req, res) {
       },
       { where: { id: req.params.id } },
     );
-    return res.json({ msg: "User updated successfully" });
+    return res.status(200).json({ msg: "User updated successfully" });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -87,7 +87,7 @@ async function destroy(req, res) {
       force: order.length === 0 && true,
       individualHooks: order.length > 0 && true,
     });
-    return res.json({ msg: "User deleted successfully." });
+    return res.status(200).json({ msg: "User deleted successfully." });
   } catch (err) {
     console.log(err);
   }

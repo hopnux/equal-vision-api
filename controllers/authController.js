@@ -9,19 +9,23 @@ async function validateUser(req, res) {
 
     if (!user) {
       console.log("Username does not exist.");
-      return res.json({ msg: "Incorrect credentials. Please try again.", constraint: true });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect credentials. Please try again.", constraint: true });
     }
 
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
       console.log("Invalid password.");
-      return res.json({ msg: "Incorrect credentials. Please try again.", constraint: true });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect credentials. Please try again.", constraint: true });
     }
 
     const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET);
 
-    return res.json({
+    return res.status(200).json({
       token: token,
       userFirstname: user.firstname,
     });
@@ -36,19 +40,23 @@ async function validateAdmin(req, res) {
 
     if (!admin) {
       console.log("Admin does not exist.");
-      return res.json({ msg: "Incorrect credentials. Please try again.", constraint: true });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect credentials. Please try again.", constraint: true });
     }
 
     const match = await bcrypt.compare(req.body.password, admin.password);
 
     if (!match) {
       console.log("Invalid password.");
-      return res.json({ msg: "Incorrect credentials. Please try again.", constraint: true });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect credentials. Please try again.", constraint: true });
     }
 
     const token = jwt.sign({ sub: admin.id }, process.env.JWT_SECRET);
 
-    return res.json({
+    return res.status(200).json({
       token: token,
     });
   } catch (err) {

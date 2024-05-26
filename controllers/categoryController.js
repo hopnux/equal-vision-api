@@ -23,7 +23,7 @@ const form = formidable({
 async function index(req, res) {
   try {
     const categories = await Category.findAll();
-    return res.json(categories);
+    return res.status(200).json(categories);
   } catch (err) {
     console.log(err);
   }
@@ -34,8 +34,8 @@ async function show(req, res) {
   try {
     const category = await Category.findByPk(req.params.id);
     return category
-      ? res.json(category)
-      : res.json({ msg: "Error 404. Category not found.", notFound: true });
+      ? res.status(200).json(category)
+      : res.status(404).json({ msg: "We apologize. Category not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -67,7 +67,7 @@ async function store(req, res) {
         /// ↑ *** SUPABASE SETTINGS | UNCOMMENT ONLY FOR DEPLOYMENT ↑ *** ///
       }
 
-      return res.json({ msg: "Category added successfully." });
+      return res.status(201).json({ msg: "Category added successfully." });
     } catch (err) {
       console.log(err);
       return res.json({ msg: err.errors[0].message, constraint: true });
@@ -80,7 +80,7 @@ async function update(req, res) {
   const category = await Category.findByPk(req.params.id);
 
   if (!category) {
-    return res.json({ msg: "We apologize. Category not found." });
+    return res.status(404).json({ msg: "We apologize. Category not found." });
   }
 
   form.parse(req, async (err, fields, files) => {
@@ -110,7 +110,7 @@ async function update(req, res) {
         /// ↑ *** SUPABASE SETTINGS | UNCOMMENT ONLY FOR DEPLOYMENT ↑ *** ///
       }
 
-      return res.json({ msg: "Category updated successfully." });
+      return res.status(200).json({ msg: "Category updated successfully." });
     } catch (err) {
       console.log(err);
       return res.json({ msg: err.errors[0].message, constraint: true });
@@ -123,14 +123,14 @@ async function destroy(req, res) {
   try {
     const category = await Category.findByPk(req.params.id);
     if (!category) {
-      return res.json({ msg: "We apologize. Category not found." });
+      return res.status(404).json({ msg: "We apologize. Category not found." });
     }
     await Category.destroy({
       where: {
         id: req.params.id,
       },
     });
-    return res.json({ msg: "Category deleted successfully." });
+    return res.status(200).json({ msg: "Category deleted successfully." });
   } catch (err) {
     console.log(err);
     if ((err.name = "SequelizeForeignKeyConstraintError")) {

@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 async function index(req, res) {
   try {
     const admins = await Admin.scope("noPassword").findAll({ order: [["createdAt", "DESC"]] });
-    return res.json(admins);
+    return res.status(200).json(admins);
   } catch (err) {
     console.log(err);
   }
@@ -16,7 +16,7 @@ async function show(req, res) {
   try {
     const admin = await Admin.scope("noPassword").findByPk(req.params.id);
     return admin
-      ? res.json(admin)
+      ? res.status(200).json(admin)
       : res.status(404).json({ msg: "We apologize. Admin not found.", notFound: true });
   } catch (err) {
     console.log(err);
@@ -38,7 +38,7 @@ async function store(req, res) {
       email: req.body.email,
       password: password,
     });
-    return res.json({ msg: "Admin created successfully." });
+    return res.status(201).json({ msg: "Admin created successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -53,7 +53,7 @@ async function update(req, res) {
       return res.status(404).json({ msg: "We apologize. Admin not found." });
     }
     if (admin.id === 1) {
-      return res.json({ msg: "We apologize. That admin cannot be updated." });
+      return res.status(403).json({ msg: "We apologize. That admin cannot be updated." });
     }
     await Admin.update(
       {
@@ -63,7 +63,7 @@ async function update(req, res) {
       },
       { where: { id: req.params.id } },
     );
-    return res.json({ msg: "Admin updated successfully" });
+    return res.status(200).json({ msg: "Admin updated successfully" });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -78,14 +78,14 @@ async function destroy(req, res) {
       return res.status(404).json({ msg: "We apologize. Admin not found." });
     }
     if (admin.id === 1) {
-      return res.json({ msg: "We apologize. That admin cannot be deleted." });
+      return res.status(403).json({ msg: "We apologize. That admin cannot be deleted." });
     }
     await Admin.destroy({
       where: {
         id: req.params.id,
       },
     });
-    return res.json({ msg: "Admin deleted successfully." });
+    return res.status(200).json({ msg: "Admin deleted successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0] });

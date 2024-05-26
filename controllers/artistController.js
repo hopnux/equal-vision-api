@@ -6,7 +6,7 @@ const formidable = require("formidable");
 async function index(req, res) {
   try {
     const artists = await Artist.findAll();
-    return res.json(artists);
+    return res.status(200).json(artists);
   } catch (err) {
     console.log(err);
   }
@@ -17,8 +17,8 @@ async function show(req, res) {
   try {
     const artist = await Artist.findByPk(req.params.id);
     return artist
-      ? res.json(artist)
-      : res.json({ msg: "Error 404. Artist not found.", notFound: true });
+      ? res.status(200).json(artist)
+      : res.status(404).json({ msg: "We apologize. Artist not found.", notFound: true });
   } catch (err) {
     console.log(err);
   }
@@ -32,7 +32,7 @@ async function store(req, res) {
       description: req.body.description,
       image: req.body.image,
     });
-    return res.json({ msg: "Artist added successfully." });
+    return res.status(201).json({ msg: "Artist added successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -44,7 +44,7 @@ async function update(req, res) {
   try {
     const artist = await Artist.findByPk(req.params.id);
     if (!artist) {
-      return res.json({ msg: "We apologize. Artist not found." });
+      return res.status(404).json({ msg: "We apologize. Artist not found." });
     }
     await Artist.update(
       {
@@ -54,7 +54,7 @@ async function update(req, res) {
       },
       { where: { id: req.params.id } },
     );
-    return res.json({ msg: "Artist updated successfully." });
+    return res.status(200).json({ msg: "Artist updated successfully." });
   } catch (err) {
     console.log(err);
     return res.json({ msg: err.errors[0].message, constraint: true });
@@ -66,14 +66,14 @@ async function destroy(req, res) {
   try {
     const artist = await Artist.findByPk(req.params.id);
     if (!artist) {
-      return res.json({ msg: "We apologize. Artist not found." });
+      return res.status(404).json({ msg: "We apologize. Artist not found." });
     }
     await Artist.destroy({
       where: {
         id: req.params.id,
       },
     });
-    return res.json({ msg: "Artist deleted successfully." });
+    return res.status(200).json({ msg: "Artist deleted successfully." });
   } catch (err) {
     console.log(err);
     if ((err.name = "SequelizeForeignKeyConstraintError")) {
