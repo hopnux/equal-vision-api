@@ -1,5 +1,5 @@
 {
-  "name": "equal-vision-api",
+  "name": "record-label-api",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -9,9 +9,9 @@
     "seeders": "node seeders/runAllSeeders.js"
   },
   "keywords": [],
-  "author": "Hack Academy",
-  "license": "ISC",
-  "description": "Hack Academy - Ejemplo de MVC y Sequelize",
+  "author": "hopnux",
+  "license": "",
+  "description": "Record label REST API",
   "dependencies": {
     "@supabase/supabase-js": "^2.42.0",
     "bcryptjs": "^2.4.3",
